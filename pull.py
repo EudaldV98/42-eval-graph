@@ -3,14 +3,14 @@ import json
 from collections import defaultdict
 
 
-CAMPUS_ID = 13
+CAMPUS_ID = 56
 CURSUS_ID = 21
 
 def fetch():
     res = ic.pages_threaded('scale_teams', params={
         'filter[campus_id]': CAMPUS_ID,
         'filter[cursus_id]': CURSUS_ID,
-        'range[begin_at]': "2023-08-10,2024-08-10"
+        'range[begin_at]': "2023-01-01,2024-08-12"
     })
 
     return res
