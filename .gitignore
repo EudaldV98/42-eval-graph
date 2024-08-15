@@ -1,4 +1,4 @@
-web/data.json
+web/*.json
 config.yml
 
 __pycache__/
