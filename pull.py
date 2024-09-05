@@ -4,13 +4,13 @@ from collections import defaultdict
 import networkx as nx
 
 CAMPUS_ID = 56
-CURSUS_ID = 21
+CURSUS_ID = 9
 
 def fetch():
     res = ic.pages_threaded('scale_teams', params={
         'filter[campus_id]': CAMPUS_ID,
         'filter[cursus_id]': CURSUS_ID,
-        'range[begin_at]': "2023-01-01,2024-08-12"
+        'range[begin_at]': "2024-08-05,2024-08-27"
     })
     return res
 
