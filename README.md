@@ -1,57 +1,143 @@
 <h1 align="center"><code>42-eval-graph</code></h1>
 
 <div align="center">
-  <sub>Created by <a href="">Jordane Gengo (Titus)</a></sub>
+  <sub>Created by <a href="https://github.com/jgengo">Jordane Gengo (Titus)</a></sub>
+  <br>
+  <sub>Forked by pibouill</sub>
 </div>
 
-<h1 align="center">Proof-of-Concept</h1>
+<h1 align="center">Peer Evaluation Network</h1>
 
-This project is a simple Proof-of-Concept for the 42network allowing to visualize the evaluations made via a network graph.
+Visualize 42 peer evaluations as an interactive network graph.
 
 ![example](.github/docs/image0.png)
 
-<br>
-<br>
+## Features
 
-![example link](.github/docs/image1.png)
+- **Interactive Graph**: Click nodes/links to view detailed information
+- **Info Panel**: Shows student stats, cluster, evaluation dates
+- **Multiple Views**: All data, Critical evaluations, Clusters
+- **Search**: Find students by login
+- **Filter**: Show only high-value evaluations
+- **Date Support**: First/last evaluation dates
 
 ## Requirements
 
-- 42API app
-- Python 3.6+ (tested with 3.12)
+- 42 Intra API credentials
+- Python 3.8+
 
-## How to run
+## Installation
 
-Create a venv
-```
+```bash
+# Create virtual environment
 python3 -m venv venv
-```
-
-Activate your venv
-```
 source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-Add the information to your config.yml
-```
+## Configuration
+
+Copy and configure your API credentials:
+```bash
 cp config.sample.yml config.yml
+# Edit config.yml with your 42 API client/secret
 ```
 
-Edit pull.py information (CAMPUS_ID, CURSUS_ID, and the time_range) and run pull.py
-```
+**Note:** config.yml is gitignored - your credentials are safe.
+
+### Get API Credentials
+
+1. Go to [42 Intra OAuth Applications](https://profile.intra.42.fr/oauth/applications)
+2. Create a new application
+3. Set redirect URI to `http://localhost`
+4. Copy the UID and secret to config.yml
+
+## Usage
+
+### Fetch Data
+
+```bash
+# Use dates from config.yml (default)
 python pull.py
+
+# Specific date range
+python pull.py --from 2025-09-01 --to 2026-01-15
+
+# By cohort start date
+python pull.py --cohort 2025-09-01
+
+# Generate sample data (no API needed)
+python pull.py --sample
+
+# Force refresh (ignore cache)
+python pull.py --force
+# or
+python pull.py -f
 ```
 
-The previous command will create a data.json file inside `./web` directory
+### Run Web Server
 
-Open index.html with your favorite browser (tested with Chrome)
+```bash
+cd web
+python3 -m http.server 8000
+```
 
-<br>
+Open http://localhost:8000 in your browser.
 
-## Potential ideas
+## Views
 
-- Cluster Detection and Visualization (js-louvain)
-- Interactive Info Panel (instead of tooltip)
+- `index.html` - All evaluation data
+- `critical.html` - High-value evaluations (value > 5)
+- `clusters.html` - View by cluster
+
+## Interacting with the Graph
+
+- **Click on node**: Opens info panel with student details
+- **Click on link**: Shows evaluation details
+- **Click outside**: Closes info panel
+- **Drag nodes**: Reposition
+- **Scroll/pan**: Zoom and navigate
+- **Search box**: Find by login
+
+## Info Panel
+
+Click any node or link to see:
+- Login and cluster
+- Evaluations given/received
+- Total connections
+- First/last evaluation dates
+- Link to 42 Intra profile
+
+## CLI Options
+
+| Option | Description |
+|--------|------------|
+| `--from` | Start date (YYYY-MM-DD) |
+| `--to` | End date (YYYY-MM-DD) |
+| `--cohort` | Fetch users who started on date |
+| `--sample` | Generate sample data |
+| `--force`, `-f` | Force refresh (ignore cache) |
+| `--campus` | Campus ID (default: 56) |
+| `--cursus` | Cursus ID (default: 21) |
+
+## Data Format
+
+The generated `data.json` includes:
+```json
+{
+  "nodes": [{"id": "login", "group": 1}],
+  "links": [
+    {"source": "user1", "target": "user2", "value": 3, "first_eval": "2025-09-01", "last_eval": "2025-12-15"}
+  ]
+}
+```
+
+## Potential Ideas
+
+- Cluster Detection and Visualization
+- Interactive Info Panel ✓ (Done)
 - Time-Based Filtering
 - Heatmap Overlay
 - Export Graph as Image
